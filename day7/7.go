@@ -1,7 +1,7 @@
 package main
 
 import (
-	"aoc"
+	"2021advent_of_code/aoc"
 )
 
 // PROBLEM-SPECIFIC UTIL FUNCTIONS
@@ -9,7 +9,7 @@ func findCrabEnergy(delta int, part1 bool) int {
 	val := 0
 	for i := 1; i <= delta; i++ {
 		if part1 {
-			val += 1
+			val ++
 		} else {
 			val += i
 		}
@@ -24,7 +24,7 @@ func populateAllCrabs(initialCrabPos []string, allCrabs *map[int]int, part1 bool
 			continue
 		}
 		crabPosVal := aoc.Atoi(crabPos)
-		for k, _ := range *allCrabs {
+		for k := range *allCrabs {
 			delta := aoc.Absolute(crabPosVal, k)
 			(*allCrabs)[k] += findCrabEnergy(delta, part1)
 			highestEnergy = aoc.Max(highestEnergy, (*allCrabs)[k])

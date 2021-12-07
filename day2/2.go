@@ -15,7 +15,7 @@ func check(e error) {
 
 func main() {
     fmt.Println("Solving!")
-    input, err := os.ReadFile("/Users/gyao/Downloads/test2.txt")
+    input, err := os.ReadFile("input/test2.txt")
     check(err)
     result := 0
     horizontal_pos := 0
@@ -55,7 +55,7 @@ func main() {
 
 // func main() {
 //     fmt.Println("Solving!")
-//     input, err := os.ReadFile("/Users/gyao/Downloads/2.txt")
+//     input, err := os.ReadFile("input/2.txt")
 //     check(err)
 //     result := 0
 //     forward_magnitude := 0

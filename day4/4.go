@@ -33,6 +33,7 @@ func crossValue(currentMove int, allBingoBoards *map[int][][]int) *map[int][][]i
   return allBingoBoards
 }
 
+// PART 1
 // func checkWinner(allBingoBoards *map[int][][]int) int {
 //   for i, board := range *allBingoBoards {
 //     for _, row := range board {
@@ -69,6 +70,7 @@ func sumBoard(board [][]int) int {
   return sum
 }
 
+// PART 1
 // func runBingo(moveSet []string, allBingoBoards *map[int][][]int) int {
 //   sumOfWinningBoard := 0
 //   for _, move := range moveSet {
@@ -163,7 +165,8 @@ func parseBingoBoards(rawBingoBoards []string) map[int][][]int {
 
 func main() {
     fmt.Println("Solving!")
-    input, err := os.ReadFile("/Users/gyao/Downloads/4.txt")
+    // input, err := os.ReadFile("input/test4.txt")
+    input, err := os.ReadFile("input/4.txt")
     check(err)
     result := 0
     in := strings.Split(string(input),"\n\n")

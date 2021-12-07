@@ -69,6 +69,6 @@ func solve(inputFile string) {
 }
 
 func main() {
-	solve("../downloads/test6.txt")
-	solve("../downloads/6.txt")
+	solve("input/test6.txt")
+	solve("input/6.txt")
 }

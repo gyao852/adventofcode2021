@@ -36,7 +36,7 @@ func Min(x, y int) int {
 }
 func main() {
     fmt.Println("Solving!")
-    input, err := os.ReadFile("/Users/gyao/Downloads/5.txt")
+    input, err := os.ReadFile("input/5.txt")
     check(err)
     result := 0
     lines := strings.Split(string(input),"\n")
@@ -150,9 +150,10 @@ func main() {
     fmt.Println(result)
 }
 
+// PART 1
 // func main() {
 //     fmt.Println("Solving!")
-//     input, err := os.ReadFile("/Users/gyao/Downloads/5.txt")
+//     input, err := os.ReadFile("input/5.txt")
 //     check(err)
 //     result := 0
 //     lines := strings.Split(string(input),"\n")

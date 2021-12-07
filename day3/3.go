@@ -14,7 +14,7 @@ func check(e error) {
 }
 func main() {
     fmt.Println("Solving!")
-    input, err := os.ReadFile("/Users/gyao/Downloads/3.txt")
+    input, err := os.ReadFile("input/3.txt")
     check(err)
     result := 0
     oxygen_generator_rating := 0
@@ -179,9 +179,10 @@ func main() {
     fmt.Println(result)
 }
 
+// PART 1
 // func main() {
 //     fmt.Println("Solving!")
-//     input, err := os.ReadFile("/Users/gyao/Downloads/3.txt")
+//     input, err := os.ReadFile("input/3.txt")
 //     check(err)
 //     result := 0
 //     gamma_rate := 0

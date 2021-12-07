@@ -18,7 +18,7 @@ func check(e error) {
 // }
 func main() {
 	fmt.Println("Solving!")
-	input, err := os.ReadFile("/Users/gyao/Downloads/1.txt")
+	input, err := os.ReadFile("input/1.txt")
 	check(err)
 	result := 0
 	depths := strings.Split(string(input), "\n")
@@ -44,10 +44,10 @@ func main() {
 	fmt.Println(result)
 }
 
-//
+// PART 1
 // func main() {
 //     fmt.Println("Solving!")
-//     input, err := os.ReadFile("/Users/gyao/Downloads/1.txt")
+//     input, err := os.ReadFile("input1.txt")
 //     check(err)
 //     result := 0
 //     depths := strings.Split(string(input),"\n")

@@ -51,7 +51,7 @@ func Solve(inputFile string) {
 	// Read input and initialize values
 	initialCrabPos := aoc.ReadInput(inputFile, ",")
 	maxCrabPos, highestEnergy, position, result := 0, 0, 0, 0
-	allCrabs := make(map[int]int) //
+	allCrabs := make(map[int]int)
 
 	// Find the largest crab position. This will be our upper bound
 	for _, crabPos := range initialCrabPos {

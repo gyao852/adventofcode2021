@@ -9,11 +9,16 @@ import (
 	// "math"
 )
 
-// UTIL FUNCTIONS
-func Check(e error) {
-	if e != nil {
-		panic(e)
-	}
+
+// Check e is in a
+func Contains(a string, e string) bool {
+  s := strings.Split(a,"")
+  for _, a := range s {
+      if a == e {
+          return true
+      }
+  }
+  return false
 }
 
 // Max returns the larger of x or y.
@@ -32,7 +37,7 @@ func Min(x, y int) int {
 	return x
 }
 
-// Min returns the smaller of x or y.
+// Absolue returns the absolute delta of x and y.
 func Absolute(x, y int) int {
 	if x > y {
 		return x - y
@@ -40,14 +45,14 @@ func Absolute(x, y int) int {
 	return y - x
 }
 
-// Convert string to int
+// Atoi converts string to int
 func Atoi(number string) int {
 	val, err := strconv.Atoi(strings.Split(number, "\n")[0])
 	Check(err)
 	return val
 }
 
-// Convert int to string
+// Itoa converts int to string
 func Itoa(number int) string {
 	val := strconv.Itoa(number)
 	return val
@@ -103,4 +108,11 @@ func ReadInput(input string, delimiter string) []string {
 		}
 	}
 	return inputSplit
+}
+
+// Check if exception is raised
+func Check(e error) {
+	if e != nil {
+		panic(e)
+	}
 }

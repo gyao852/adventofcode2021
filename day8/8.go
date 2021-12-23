@@ -106,7 +106,7 @@ func InterpretLine(signalPattern []string) map[string]int {
 	return mapStrPatternToDigit
 }
 
-func InterpretDigits(pattternToDiggit map[string]int, signalDigits []string, part1 bool) int {
+func InterpretDigits(pattternToDiggit map[string]int, signalDigits []string) int {
 	signalVal := 0
 	for i,strDigit := range signalDigits {
 		for k,v := range pattternToDiggit {
@@ -133,14 +133,13 @@ func Solve(inputFile string) {
 	aoc.Log("Solving")
 	// Read input and initialize values
 	result := 0
-	part1 := true
 	input := aoc.ReadInput(inputFile, "\n")
 	for i := 0; i < len(input); i++ {
 		splitLine := strings.Split(input[i], "| ")
 		signalPattern, digitOutput := strings.Split(splitLine[0], " "), strings.Split(splitLine[1], " ")
 		signalPattern = signalPattern[:len(signalPattern)-1]
 		interpretedLine := InterpretLine(signalPattern)
-		interpretedDigits := InterpretDigits(interpretedLine, digitOutput, part1)
+		interpretedDigits := InterpretDigits(interpretedLine, digitOutput)
 		aoc.Log(signalPattern, digitOutput, "=>")
 		aoc.Log(interpretedLine)
 		// aoc.Log(interpretedDigits)

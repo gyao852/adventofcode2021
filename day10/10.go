@@ -44,8 +44,11 @@ func checkForSyntax(line string,part1 bool) int {
 			stack = stack[:n]
 			if chunkCloses[lastElement] != c {
 					aoc.Log("Syntax Error Found on line:",line,". Expected", chunkCloses[lastElement], "but found",c)
+					if !part1 {
+						syntaxError = true
+						break
+					}
 					points += syntaxErrorScore[c]
-					syntaxError = true
 					break
 			}
 		}
@@ -57,7 +60,6 @@ func checkForSyntax(line string,part1 bool) int {
 			stack = stack[:n]
 			points *= 5
 			points += syntaxCorrectionScore[lastElement]
-			// aoc.Log(line, lastElement, syntaxCorrectionScore[lastElement],points)
 		}
 	}
 	return points
@@ -74,13 +76,17 @@ func Solve(inputFile string) {
 		if part1 {
 			result += checkForSyntax(line,part1)
 		} else {
-			part2Points = append(part2Points,checkForSyntax(line,part1))
+			points := checkForSyntax(line,part1)
+			if points > 0 {
+				part2Points = append(part2Points,points)
+			}
 		}
 	}
 	if !part1 {
 		sort.Slice(part2Points, func(i, j int) bool {
 			return part2Points[i] > part2Points[j]
 		})
+		aoc.Log(part2Points)
 		result = part2Points[len(part2Points)/2]
 	}
 
@@ -88,6 +94,6 @@ func Solve(inputFile string) {
 }
 
 func main() {
-	Solve("input/test10.txt")
-	// Solve("input/10.txt")
+	// Solve("input/test10.txt")
+	Solve("input/10.txt")
 }

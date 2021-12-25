@@ -8,7 +8,6 @@ import (
 // PROBLEM-SPECIFIC UTIL FUNCTIONS
 
 func CalculateRiskLevel(lowPoints []int) int {
-	// aoc.Log(lowPoints)
 	result := 0
 	for _, val := range lowPoints {
 		result += val + 1
@@ -87,6 +86,6 @@ func Solve(inputFile string) {
 }
 
 func main() {
-	Solve("input/test9.txt")
+	// Solve("input/test9.txt")
 	Solve("input/9.txt")
 }

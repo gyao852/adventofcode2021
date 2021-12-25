@@ -29,7 +29,9 @@ func GetBasinFromLowPoint(lowPoint seaCoordinate, seaMap [][]int) []seaCoordinat
 	for len(queue) > 0 {
 		currentPoint := queue[0]
 		queue = queue[1:]
-		seenCoordinates = append(seenCoordinates,currentPoint)
+		if !Contains(seenCoordinates,currentPoint) {
+			seenCoordinates = append(seenCoordinates,currentPoint)
+		}
 		if currentPoint.x > 0 {
 			// check above
 			aboveDigit := seaMap[currentPoint.x-1][currentPoint.y]
@@ -67,7 +69,7 @@ func GetBasinFromLowPoint(lowPoint seaCoordinate, seaMap [][]int) []seaCoordinat
 }
 
 func CalculateNLargestBasins(lowPoints []seaCoordinate, seaMap [][]int, n int) int {
-	largestBasins := make([][]seaCoordinate,n)
+	largestBasins := make([][]seaCoordinate,0)
 	result := 1
 	smallestLargeBasin := 0
 	for _, lowPoint := range lowPoints {
@@ -91,6 +93,7 @@ func CalculateNLargestBasins(lowPoints []seaCoordinate, seaMap [][]int, n int) i
 		}
 	}
 	for _, basin := range largestBasins {
+		aoc.Log("Size of basin:",len(basin),"\nBasin:",basin)
 		result *= len(basin)
 	}
 	return result
@@ -106,7 +109,6 @@ func CalculateRiskLevel(lowPoints []int) int {
 
 func FindLowPoints(inputMatrix [][]int,length int, height int) []seaCoordinate {
 	lowPoints := make([]seaCoordinate, 0)
-	result := 0
   for i := 0; i < height; i ++ {
     for j:=0; j < length; j++ {
       currDigit := inputMatrix[i][j]
@@ -144,7 +146,6 @@ func FindLowPoints(inputMatrix [][]int,length int, height int) []seaCoordinate {
       }
 			newLowPoint := seaCoordinate{currDigit,i,j}
       lowPoints = append(lowPoints,newLowPoint)
-			result += currDigit + 1
     }
     }
     return lowPoints
@@ -169,13 +170,18 @@ func Solve(inputFile string) {
 			inputMatrix[i][j] = currDigit
 		}
 	}
+
+	// First find all the lowest points in the sea
   lowpoints := FindLowPoints(inputMatrix,length, height)
+
+	// Part1 just do some math
+	// Part2, need to do BPF to look for basin map
   // result = CalculateRiskLevel(lowpoints) // part1
 	result = CalculateNLargestBasins(lowpoints, inputMatrix, 3) // part2
 	aoc.Log(result)
 }
 
 func main() {
-	Solve("input/test9.txt")
+	// Solve("input/test9.txt")
 	Solve("input/9.txt")
 }

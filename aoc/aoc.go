@@ -13,8 +13,8 @@ import (
 // Check e is in a
 func Contains(a string, e string) bool {
   s := strings.Split(a,"")
-  for _, a := range s {
-      if a == e {
+  for _, v := range s {
+      if v == e {
           return true
       }
   }

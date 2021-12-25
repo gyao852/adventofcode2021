@@ -3,6 +3,7 @@ package main
 import (
 	"2021advent_of_code/aoc"
 	"strings"
+	"sort"
 )
 
 // PROBLEM-SPECIFIC UTIL FUNCTIONS
@@ -69,32 +70,21 @@ func GetBasinFromLowPoint(lowPoint seaCoordinate, seaMap [][]int) []seaCoordinat
 }
 
 func CalculateNLargestBasins(lowPoints []seaCoordinate, seaMap [][]int, n int) int {
-	largestBasins := make([][]seaCoordinate,0)
+	// largestBasins := make([][]seaCoordinate,0)
+	largestBasins := []int{}
 	result := 1
-	smallestLargeBasin := 0
 	for _, lowPoint := range lowPoints {
 		basinMap := GetBasinFromLowPoint(lowPoint, seaMap)
-		if len(largestBasins) < n {
-			largestBasins = append(largestBasins, basinMap)
-			for i := 0; i < len(largestBasins) - 1; i++ {
-				if len(largestBasins[i]) > len(largestBasins[i+1]) {
-					smallestLargeBasin = i
-				}
-			}
-		} else {
-			if len(largestBasins[smallestLargeBasin]) < len(basinMap) {
-				largestBasins[smallestLargeBasin] = basinMap
-			}
-			for i := 0; i < len(largestBasins) - 1; i++ {
-				if len(largestBasins[i]) > len(largestBasins[i+1]) {
-					smallestLargeBasin = i
-				}
-			}
-		}
+		largestBasins = append(largestBasins,len(basinMap))
+
 	}
-	for _, basin := range largestBasins {
-		aoc.Log("Size of basin:",len(basin),"\nBasin:",basin)
-		result *= len(basin)
+
+	sort.Slice(largestBasins, func(i, j int) bool {
+		return largestBasins[i] > largestBasins[j]
+	})
+	for i := 0; i < n; i ++ {
+		aoc.Log("Length of basin",i+1,":",largestBasins[i])
+		result *= largestBasins[i]
 	}
 	return result
 }

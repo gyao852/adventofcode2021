@@ -104,10 +104,11 @@ func resetOctopus(inputMatrix [][]int) [][]int {
 	return inputMatrix
 }
 
-func countFlashesInStep(inputMatrix [][]octopus) ([][]octopus, int) {
+func countFlashesInStep(inputMatrix [][]octopus, part1 bool) ([][]octopus, int, bool) {
 	// Increase energy level of all octopus by 1
 	length := len(inputMatrix)
 	width := len(inputMatrix[0])
+	isSync := true
 	counter := 0
 	for i := 0; i < length; i++ {
 		for j := 0; j < width; j++ {
@@ -141,7 +142,16 @@ func countFlashesInStep(inputMatrix [][]octopus) ([][]octopus, int) {
 			inputMatrix[i][j].flashing = false
 		}
 	}
-	return inputMatrix, counter
+
+	for i := 0; i < length; i++ {
+		for j := 0; j < width; j++ {
+			if inputMatrix[i][j].energy != 0 {
+				isSync = false
+			}
+		}
+	}
+
+	return inputMatrix, counter, isSync
 }
 
 // SOLVER
@@ -154,7 +164,9 @@ func Solve(inputFile string) {
 	length := len(input[0])
 	height := len(input)
 	inputMatrix := make([][]octopus, height)
-	steps := 100 //100
+	part1 := false
+	isSync := false
+	steps := 400 //100
 
 	// Generate a 2d slice of input
 	for i := 0; i < height; i++ {
@@ -171,11 +183,15 @@ func Solve(inputFile string) {
 	for i := 0; i < steps; i++ {
 		flashes := 0
 		aoc.Log("After Step", i+1, ":")
-		inputMatrix, flashes = countFlashesInStep(inputMatrix)
+		inputMatrix, flashes, isSync = countFlashesInStep(inputMatrix, true)
 		PrettyPrint(inputMatrix)
 		result += flashes
+		if isSync && !part1 {
+			aoc.Log("Part 2 answer:", i+1)
+			break
+		}
 	}
-	aoc.Log(result)
+	// aoc.Log("Part 1 answer:", result)
 }
 
 func main() {

@@ -26,6 +26,15 @@ func Contains(s []cave, e cave) bool {
 	return false
 }
 
+func MapContains(a map[string]int, e string) bool {
+	for k, _ := range a {
+		if k == e {
+			return true
+		}
+	}
+	return false
+}
+
 func PrettyPrintCaveMap(s map[string]cave) {
 	for k, v := range s {
 		allPaths := ""
@@ -41,25 +50,64 @@ func IsBigCave(caveName string) bool {
 	return caveName == strings.ToUpper(string(caveName))
 }
 
-func CanExploreSmallCave(part1 bool, smallCavesVisited []cave, currCave cave) bool {
+func CanExploreSmallCave(part1 bool, smallCavesVisited map[string]int, currCave cave) (bool, map[string]int) {
 	if part1 {
-		return !Contains(smallCavesVisited, currCave)
+		smallCavesVisited[currCave.name] = 1
+		return !MapContains(smallCavesVisited, currCave.name), smallCavesVisited
+	} else {
+		// If this is the first time visiting a small cave than
+		// continue
+		// First check to see if we've visited a small cave before
+		visitedSmallCave := false
+		for k, _ := range smallCavesVisited {
+			if !IsBigCave(k) {
+				visitedSmallCave = true
+			}
+		}
+
+		// First time visiting small cave
+		if !visitedSmallCave {
+			smallCavesVisited[currCave.name] = 1
+			return true, smallCavesVisited
+		} else {
+			// We've visited at least one small Cave. If we've visited any other cave
+			// more than once, we terminate otherwise we continue
+			visitedMulSmallCaves := false
+			for _, v := range smallCavesVisited {
+				if v > 1 {
+					visitedMulSmallCaves = true
+				}
+			}
+			if !visitedMulSmallCaves {
+				if _, ok := smallCavesVisited[currCave.name]; ok {
+					smallCavesVisited[currCave.name]++
+				} else {
+					smallCavesVisited[currCave.name] = 1
+				}
+				return true, smallCavesVisited
+			}
+		}
 	}
-	return false
+	return false, smallCavesVisited
 }
-func DFS(currPos string, currPath string, adjMap map[string]cave, smallCavesVisited []cave, part1 bool) {
+func DFS(currPos string, currPath string, adjMap map[string]cave, smallCavesVisited map[string]int, part1 bool) {
 	if currPos == "end" {
 		aoc.Log(currPath)
 		COUNT++
 	}
-
 	// For each adjacent cave, we try to explore each of them
 	for _, adjCave := range adjMap[currPos].adjacentCaves {
 		// if we haven't explored an adjacent cave yet, try exploring it
-		if IsBigCave(adjCave.name) {
+		if IsBigCave(adjCave.name) || adjCave.name == "end" {
 			DFS(adjCave.name, currPath+" -> "+adjCave.name, adjMap, smallCavesVisited, part1)
-		} else if CanExploreSmallCave(part1, smallCavesVisited, adjCave) {
-			DFS(adjCave.name, currPath+" -> "+adjCave.name, adjMap, append(smallCavesVisited, adjCave), part1)
+		} else {
+			smallCaveExplorable := false
+			smallCavesVisitedCopy := smallCavesVisited
+			aoc.Log(currPath, adjCave, smallCavesVisited)
+			smallCaveExplorable, smallCavesVisitedCopy = CanExploreSmallCave(part1, smallCavesVisitedCopy, adjCave)
+			if smallCaveExplorable {
+				DFS(adjCave.name, currPath+" -> "+adjCave.name, adjMap, smallCavesVisitedCopy, part1)
+			}
 		}
 	}
 }
@@ -111,17 +159,17 @@ func Solve(inputFile string) {
 	result := 0
 	input := aoc.ReadInput(inputFile, "\n")
 	adjMap := PopulateAdjMap(input)
-	part1 := true
+	part1 := false
 
-	PrettyPrintCaveMap(adjMap)
-	DFS("start", "start", adjMap, make([]cave, 0), part1)
+	// PrettyPrintCaveMap(adjMap)
+	DFS("start", "start", adjMap, make(map[string]int, 0), part1)
 	result = COUNT
 	aoc.Log("result", result)
 }
 
 func main() {
-	// Solve(basePath + "input/t.txt")
+	Solve(basePath + "input/t.txt")
 	// Solve(basePath + "input/t2.txt")
 	// Solve(basePath + "input/t3.txt")
-	Solve(basePath + "input/12.txt")
+	// Solve(basePath + "input/12.txt")
 }

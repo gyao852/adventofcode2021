@@ -9,16 +9,15 @@ import (
 	// "math"
 )
 
-
 // Check e is in a
 func Contains(a string, e string) bool {
-  s := strings.Split(a,"")
-  for _, v := range s {
-      if v == e {
-          return true
-      }
-  }
-  return false
+	s := strings.Split(a, "")
+	for _, v := range s {
+		if v == e {
+			return true
+		}
+	}
+	return false
 }
 
 // Max returns the larger of x or y.

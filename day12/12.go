@@ -60,14 +60,20 @@ func CanExploreSmallCave(part1 bool, smallCavesVisited map[string]int, currCave 
 		if len(smallCavesVisited) == 0 {
 			return true
 		} else {
-			for _, v := range smallCavesVisited {
-				if v > 1 {
+			if visits, ok := smallCavesVisited[currCave.name]; ok {
+				if visits > 1 {
 					return false
+				} else {
+					for _, v := range smallCavesVisited {
+						if v > 1 {
+							return false
+						}
+					}
 				}
 			}
+			return true
 		}
 	}
-	return false
 }
 func DFS(currPos string, currPath string, adjMap map[string]cave, smallCavesVisited map[string]int, part1 bool) {
 	if currPos == "end" {
@@ -77,8 +83,9 @@ func DFS(currPos string, currPath string, adjMap map[string]cave, smallCavesVisi
 	// For each adjacent cave, we try to explore each of them
 	for _, adjCave := range adjMap[currPos].adjacentCaves {
 		// if we haven't explored an adjacent cave yet, try exploring it
+		// aoc.Log(currPath)
 		if IsBigCave(adjCave.name) || adjCave.name == "end" {
-			DFS(adjCave.name, currPath+" -> "+adjCave.name, adjMap, smallCavesVisited, part1)
+			DFS(adjCave.name, currPath+","+adjCave.name, adjMap, smallCavesVisited, part1)
 		} else if CanExploreSmallCave(part1, smallCavesVisited, adjCave) {
 			smallCavesVisitedCopy := make(map[string]int, len(smallCavesVisited))
 			for k, v := range smallCavesVisited {
@@ -93,7 +100,7 @@ func DFS(currPos string, currPath string, adjMap map[string]cave, smallCavesVisi
 					smallCavesVisitedCopy[adjCave.name] = 1
 				}
 			}
-			DFS(adjCave.name, currPath+" -> "+adjCave.name, adjMap, smallCavesVisitedCopy, part1)
+			DFS(adjCave.name, currPath+","+adjCave.name, adjMap, smallCavesVisitedCopy, part1)
 		}
 	}
 }
@@ -154,8 +161,8 @@ func Solve(inputFile string) {
 }
 
 func main() {
-	Solve(basePath + "input/t.txt")
+	// Solve(basePath + "input/t.txt")
 	// Solve(basePath + "input/t2.txt")
 	// Solve(basePath + "input/t3.txt")
-	// Solve(basePath + "input/12.txt")
+	Solve(basePath + "input/12.txt")
 }

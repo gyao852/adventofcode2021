@@ -78,22 +78,55 @@ func PopulatePaper(input []string) (sheet, foldInstructions) {
 	return aPaper, instructions
 }
 
-func Fold(aPaper sheet, instruction fold) {
+func Fold(aPaper sheet, instruction fold) sheet {
 	// If we fold on the y-axis; ie horizonally
 	if instruction.plane == "y" {
-		foldedPaper := sheet{make([][]string, len(aPaper.paper)), 0}
+		foldedPaper := sheet{make([][]string, instruction.coord), aPaper.dotCount}
+		for r := 0; r < instruction.coord; r++ {
+			foldedPaper.paper[r] = make([]string, len(aPaper.paper[r]))
+			for c := 0; c < len(foldedPaper.paper[r]); c++ {
+				foldedPaper.paper[r][c] = aPaper.paper[r][c]
+			}
+		}
+
+		for r := instruction.coord + 1; r < len(aPaper.paper); r++ {
+			for c := 0; c < len(aPaper.paper[r]); c++ {
+				if aPaper.paper[r][c] == "." {
+					continue
+				}
+				if foldedPaper.paper[instruction.coord-(r-instruction.coord)][c] != "#" {
+					foldedPaper.paper[instruction.coord-(r-instruction.coord)][c] = "#"
+				} else {
+					aoc.Log(r, c)
+					foldedPaper.dotCount-- // When folded, this position is already marked
+				}
+			}
+		}
+		return foldedPaper
 	} else if instruction.plane == "x" {
-		foldedPaper := sheet{make([][]string, len(aPaper.paper)/2), 0}
+		foldedPaper := sheet{make([][]string, len(aPaper.paper)), aPaper.dotCount}
+		for r := 0; r < instruction.coord; r++ {
+			foldedPaper.paper[r] = make([]string, instruction.coord)
+			for c := 0; c < len(foldedPaper.paper[r]); c++ {
+				foldedPaper.paper[r][c] = aPaper.paper[r][c]
+			}
+		}
+		for r := instruction.coord + 1; r < len(aPaper.paper); r++ {
+			for c := 0; c < len(aPaper.paper[r]); c++ {
+				if aPaper.paper[r][c] == "." {
+					continue
+				}
+				if foldedPaper.paper[r][instruction.coord-(r-instruction.coord)] != "#" {
+					foldedPaper.paper[r][instruction.coord-(r-instruction.coord)] = "#"
+					foldedPaper.dotCount++
+				} else {
+					foldedPaper.dotCount--
+				}
+			}
+		}
+		return foldedPaper
 	} else {
 		panic("There are only 2 planes in this question...")
-	}
-
-	// Initialize aPaper with all empty '.'
-	for r, _ := range aPaper.paper {
-		aPaper.paper[r] = make([]string, maxX+1)
-		for c, _ := range aPaper.paper[r] {
-			aPaper.paper[r][c] = "."
-		}
 	}
 }
 
@@ -101,7 +134,6 @@ func Folder(part1 bool, aPaper sheet, instructions foldInstructions) sheet {
 	if part1 {
 		instruction := instructions.instruction[0]
 		newPaper := Fold(aPaper, instruction)
-		PrettyPrintPaper(newPaper)
 		return newPaper
 	}
 	return aPaper
@@ -123,6 +155,6 @@ func Solve(inputFile string) {
 }
 
 func main() {
-	Solve(basePath + "input/test13.txt")
-	// Solve(basePath + "input/13.txt")
+	// Solve(basePath + "input/test13.txt")
+	Solve(basePath + "input/13.txt")
 }

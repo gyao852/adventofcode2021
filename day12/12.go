@@ -50,45 +50,24 @@ func IsBigCave(caveName string) bool {
 	return caveName == strings.ToUpper(string(caveName))
 }
 
-func CanExploreSmallCave(part1 bool, smallCavesVisited map[string]int, currCave cave) (bool, map[string]int) {
+func CanExploreSmallCave(part1 bool, smallCavesVisited map[string]int, currCave cave) bool {
+	// For part 1, just check if it's a small cave that's been visted more than once
 	if part1 {
-		smallCavesVisited[currCave.name] = 1
-		return !MapContains(smallCavesVisited, currCave.name), smallCavesVisited
+		return !MapContains(smallCavesVisited, currCave.name)
 	} else {
-		// If this is the first time visiting a small cave than
-		// continue
-		// First check to see if we've visited a small cave before
-		visitedSmallCave := false
-		for k, _ := range smallCavesVisited {
-			if !IsBigCave(k) {
-				visitedSmallCave = true
-			}
-		}
-
-		// First time visiting small cave
-		if !visitedSmallCave {
-			smallCavesVisited[currCave.name] = 1
-			return true, smallCavesVisited
+		// For part 2, check if even a single small cave has been visited
+		// and than allow up to 2 for a single small cave
+		if len(smallCavesVisited) == 0 {
+			return true
 		} else {
-			// We've visited at least one small Cave. If we've visited any other cave
-			// more than once, we terminate otherwise we continue
-			visitedMulSmallCaves := false
 			for _, v := range smallCavesVisited {
 				if v > 1 {
-					visitedMulSmallCaves = true
+					return false
 				}
-			}
-			if !visitedMulSmallCaves {
-				if _, ok := smallCavesVisited[currCave.name]; ok {
-					smallCavesVisited[currCave.name]++
-				} else {
-					smallCavesVisited[currCave.name] = 1
-				}
-				return true, smallCavesVisited
 			}
 		}
 	}
-	return false, smallCavesVisited
+	return false
 }
 func DFS(currPos string, currPath string, adjMap map[string]cave, smallCavesVisited map[string]int, part1 bool) {
 	if currPos == "end" {
@@ -100,14 +79,21 @@ func DFS(currPos string, currPath string, adjMap map[string]cave, smallCavesVisi
 		// if we haven't explored an adjacent cave yet, try exploring it
 		if IsBigCave(adjCave.name) || adjCave.name == "end" {
 			DFS(adjCave.name, currPath+" -> "+adjCave.name, adjMap, smallCavesVisited, part1)
-		} else {
-			smallCaveExplorable := false
-			smallCavesVisitedCopy := smallCavesVisited
-			aoc.Log(currPath, adjCave, smallCavesVisited)
-			smallCaveExplorable, smallCavesVisitedCopy = CanExploreSmallCave(part1, smallCavesVisitedCopy, adjCave)
-			if smallCaveExplorable {
-				DFS(adjCave.name, currPath+" -> "+adjCave.name, adjMap, smallCavesVisitedCopy, part1)
+		} else if CanExploreSmallCave(part1, smallCavesVisited, adjCave) {
+			smallCavesVisitedCopy := make(map[string]int, len(smallCavesVisited))
+			for k, v := range smallCavesVisited {
+				smallCavesVisitedCopy[k] = v
 			}
+			if part1 {
+				smallCavesVisitedCopy[adjCave.name] = 1
+			} else {
+				if _, ok := smallCavesVisitedCopy[adjCave.name]; ok {
+					smallCavesVisitedCopy[adjCave.name]++
+				} else {
+					smallCavesVisitedCopy[adjCave.name] = 1
+				}
+			}
+			DFS(adjCave.name, currPath+" -> "+adjCave.name, adjMap, smallCavesVisitedCopy, part1)
 		}
 	}
 }

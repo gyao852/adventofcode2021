@@ -97,7 +97,6 @@ func Fold(aPaper sheet, instruction fold) sheet {
 				if foldedPaper.paper[instruction.coord-(r-instruction.coord)][c] != "#" {
 					foldedPaper.paper[instruction.coord-(r-instruction.coord)][c] = "#"
 				} else {
-					aoc.Log(r, c)
 					foldedPaper.dotCount-- // When folded, this position is already marked
 				}
 			}
@@ -105,20 +104,19 @@ func Fold(aPaper sheet, instruction fold) sheet {
 		return foldedPaper
 	} else if instruction.plane == "x" {
 		foldedPaper := sheet{make([][]string, len(aPaper.paper)), aPaper.dotCount}
-		for r := 0; r < instruction.coord; r++ {
+		for r := 0; r < len(aPaper.paper); r++ {
 			foldedPaper.paper[r] = make([]string, instruction.coord)
 			for c := 0; c < len(foldedPaper.paper[r]); c++ {
 				foldedPaper.paper[r][c] = aPaper.paper[r][c]
 			}
 		}
-		for r := instruction.coord + 1; r < len(aPaper.paper); r++ {
-			for c := 0; c < len(aPaper.paper[r]); c++ {
+		for r := 0; r < len(aPaper.paper); r++ {
+			for c := instruction.coord + 1; c < len(aPaper.paper[r]); c++ {
 				if aPaper.paper[r][c] == "." {
 					continue
 				}
-				if foldedPaper.paper[r][instruction.coord-(r-instruction.coord)] != "#" {
-					foldedPaper.paper[r][instruction.coord-(r-instruction.coord)] = "#"
-					foldedPaper.dotCount++
+				if foldedPaper.paper[r][instruction.coord-(c-instruction.coord)] != "#" {
+					foldedPaper.paper[r][instruction.coord-(c-instruction.coord)] = "#"
 				} else {
 					foldedPaper.dotCount--
 				}
@@ -131,12 +129,17 @@ func Fold(aPaper sheet, instruction fold) sheet {
 }
 
 func Folder(part1 bool, aPaper sheet, instructions foldInstructions) sheet {
+	var newPaper sheet
 	if part1 {
 		instruction := instructions.instruction[0]
-		newPaper := Fold(aPaper, instruction)
-		return newPaper
+		newPaper = Fold(aPaper, instruction)
+	} else {
+		for _, instruction := range instructions.instruction {
+			aPaper = Fold(aPaper, instruction)
+		}
+		newPaper = aPaper
 	}
-	return aPaper
+	return newPaper
 }
 
 // SOLVER
@@ -146,8 +149,7 @@ func Solve(inputFile string) {
 	result := 0
 	input := aoc.ReadInput(inputFile, "\n")
 	aPaper, instructions := PopulatePaper(input)
-	part1 := true
-	// PrettyPrintPaper(aPaper.paper)
+	part1 := false
 	resultPaper := Folder(part1, aPaper, instructions)
 	PrettyPrintPaper(resultPaper.paper)
 	result = resultPaper.dotCount

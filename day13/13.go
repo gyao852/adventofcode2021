@@ -78,8 +78,33 @@ func PopulatePaper(input []string) (sheet, foldInstructions) {
 	return aPaper, instructions
 }
 
+func Fold(aPaper sheet, instruction fold) {
+	// If we fold on the y-axis; ie horizonally
+	if instruction.plane == "y" {
+		foldedPaper := sheet{make([][]string, len(aPaper.paper)), 0}
+	} else if instruction.plane == "x" {
+		foldedPaper := sheet{make([][]string, len(aPaper.paper)/2), 0}
+	} else {
+		panic("There are only 2 planes in this question...")
+	}
+
+	// Initialize aPaper with all empty '.'
+	for r, _ := range aPaper.paper {
+		aPaper.paper[r] = make([]string, maxX+1)
+		for c, _ := range aPaper.paper[r] {
+			aPaper.paper[r][c] = "."
+		}
+	}
+}
+
 func Folder(part1 bool, aPaper sheet, instructions foldInstructions) sheet {
-	return nil
+	if part1 {
+		instruction := instructions.instruction[0]
+		newPaper := Fold(aPaper, instruction)
+		PrettyPrintPaper(newPaper)
+		return newPaper
+	}
+	return aPaper
 }
 
 // SOLVER
@@ -92,8 +117,8 @@ func Solve(inputFile string) {
 	part1 := true
 	// PrettyPrintPaper(aPaper.paper)
 	resultPaper := Folder(part1, aPaper, instructions)
+	PrettyPrintPaper(resultPaper.paper)
 	result = resultPaper.dotCount
-	PrettyPrintPaper(result.paper)
 	aoc.Log("result", result)
 }
 
